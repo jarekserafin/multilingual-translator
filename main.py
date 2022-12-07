@@ -42,13 +42,22 @@ def get_translations_for_all(url):
     examples = list()
     for x in spans:
         new_translations.append(x.text)
-    divs_examples = soup.find_all('div', {'class': ['src ltr', 'trg ltr']})
+    translation = new_translations[0]
+    divs_examples = soup.find_all('div', {'class': ['src ltr', 'trg ltr']}, limit=2)
     for i, x in enumerate(divs_examples):
         examples.append(x.text)
-        if i == 1:
-            break
     new_examples = [item.strip() for item in examples]
-    return new_translations, new_examples
+    return translation, new_examples
+
+
+# def beginning_to_file(file):
+#     file.write(msg_welcome + "\n")
+#     for ind, language in enumerate(languages, start=1):
+#         file.write(str(ind) + "." + language + "\n")
+#     file.write(msg_home + "\n")
+#     file.write(msg_foreign + "\n")
+#     file.write(msg_word + "\n")
+
 
 # headers needed to get 200 acceptance from website instead of 403
 headers = {'User-Agent': 'Mozilla/5.0'}
@@ -62,39 +71,52 @@ languages = ['Arabic', 'German', 'English', 'Spanish', 'French', 'Hebrew', 'Japa
              'Portuguese', 'Romanian', 'Russian', 'Turkish']
 
 
-
 print(msg_welcome)
 for ind, language in enumerate(languages, start=1):
     print(str(ind) + ".", language)
 
 home_language, foreign_language, word = take_input()
+file_path = word + ".txt"
+with open(file_path, 'w') as file:
 
-if foreign_language != 0:
-    url = url_maker(home_language, foreign_language)
-    translations, examples = get_translations(url)
-
-    print(foreign_language + " Translations:")
-    print()
-    for word in translations:
-        print(word)
-    print()
-    print(foreign_language + " Examples:")
-    for i, example in enumerate(examples):
-        if i % 2 == 0:
-            print()
-        print(example)
-
-else:
-    for ind, foreign_language in enumerate(languages, start=1):
-        if foreign_language == home_language:
-            continue
+    # beginning_to_file(file)
+    if foreign_language != 0:
         url = url_maker(home_language, foreign_language)
-
-        translation, examples = get_translations_for_all(url)
+        translations, examples = get_translations(url)
         print(foreign_language + " Translations:")
-        print(translation[0])
+        file.write(foreign_language + " Translations:\n")
         print()
+        file.write("\n")
+        for word in translations:
+            print(word)
+            file.write(word + "\n")
+        print()
+        file.write("\n")
         print(foreign_language + " Examples:")
-        for example in examples:
+        file.write(foreign_language + " Examples:\n")
+        for i, example in enumerate(examples):
+            if i % 2 == 0:
+                print()
+                file.write("\n")
             print(example)
-        print()
+            file.write(example + "\n")
+    else:
+        for ind, foreign_language in enumerate(languages, start=1):
+            if foreign_language == home_language:
+                continue
+            url = url_maker(home_language, foreign_language)
+            translation, examples = get_translations_for_all(url)
+
+            print(foreign_language + " Translations:")
+            file.write(foreign_language + " Translations:\n")
+            print(translation)
+            file.write(translation + "\n")
+            print()
+            file.write("\n")
+            print(foreign_language + " Examples:")
+            file.write(foreign_language + " Examples:\n")
+            for example in examples:
+                print(example)
+                file.write(example + "\n")
+            print()
+            file.write("\n")
