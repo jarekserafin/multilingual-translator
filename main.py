@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import time
+import sys
 
 
 def take_input():
@@ -50,14 +50,12 @@ def get_translations_for_all(url):
     return translation, new_examples
 
 
-# def beginning_to_file(file):
-#     file.write(msg_welcome + "\n")
-#     for ind, language in enumerate(languages, start=1):
-#         file.write(str(ind) + "." + language + "\n")
-#     file.write(msg_home + "\n")
-#     file.write(msg_foreign + "\n")
-#     file.write(msg_word + "\n")
-
+args = sys.argv
+home_language = args[1]
+foreign_language = args[2]
+if foreign_language == "all":
+    foreign_language = 0
+word = args[3]
 
 # headers needed to get 200 acceptance from website instead of 403
 headers = {'User-Agent': 'Mozilla/5.0'}
@@ -75,7 +73,7 @@ print(msg_welcome)
 for ind, language in enumerate(languages, start=1):
     print(str(ind) + ".", language)
 
-home_language, foreign_language, word = take_input()
+# home_language, foreign_language, word = take_input()
 file_path = word + ".txt"
 with open(file_path, 'w') as file:
 
