@@ -80,7 +80,10 @@ with open(file_path, 'w') as file:
     # beginning_to_file(file)
     if foreign_language != 0:
         url = url_maker(home_language, foreign_language)
-        translations, examples = get_translations(url)
+        try:
+            translations, examples = get_translations(url)
+        except requests.exceptions.ConnectionError:
+            print('Something wrong with your internet connection')
         print(foreign_language + " Translations:")
         file.write(foreign_language + " Translations:\n")
         print()
